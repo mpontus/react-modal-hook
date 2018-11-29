@@ -1,16 +1,21 @@
-import { useContext, useEffect, useState, useCallback } from "react";
+import { useContext, useEffect, useState, useCallback, useMemo } from "react";
 import { ModalType, ModalContext } from "./ModalContext";
-import { useGlobalId } from "./useGlobalId";
 
 /**
- * Callback for showing the modal
+ * Callback types provided for descriptive IDE type-hints.
  */
 type ShowModal = () => void;
+type HideModal = () => void;
 
 /**
- * Callback for hiding the modal
+ * Utility function to generate unique number per component instance
+ * based on the number of invocations.
  */
-type HideModal = () => void;
+const generateModalKey = (() => {
+  let count = 0;
+
+  return () => `${++count}`;
+})();
 
 /**
  * React hook for showing modal windows
@@ -19,7 +24,7 @@ export const useModal = (
   modal: ModalType,
   inputs?: any[]
 ): [ShowModal, HideModal] => {
-  const key = useGlobalId();
+  const key = useMemo(generateModalKey, []);
   const context = useContext(ModalContext);
   const [isShown, setShown] = useState<boolean>(false);
   const showModal = useCallback(() => setShown(true), []);
@@ -33,6 +38,7 @@ export const useModal = (
         context.hideModal(key);
       }
 
+      // Hide modal when parent component unmounts
       return () => context.hideModal(key);
     },
 
