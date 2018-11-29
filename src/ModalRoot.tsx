@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, memo } from "react";
 import ReactDOM from "react-dom";
 import { ModalContext } from "./ModalContext";
 
@@ -7,7 +7,7 @@ import { ModalContext } from "./ModalContext";
  *
  * Renders modals using a portal.
  */
-export const ModalRoot = () => {
+export const ModalRoot = memo(() => {
   const { modals } = useContext(ModalContext);
 
   return ReactDOM.createPortal(
@@ -20,4 +20,4 @@ export const ModalRoot = () => {
     </React.Fragment>,
     document.body
   );
-};
+});

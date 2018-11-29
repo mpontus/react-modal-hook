@@ -1,5 +1,5 @@
 import "react-testing-library/cleanup-after-each";
-import * as React from "react";
+import React, { useEffect } from "react";
 import { render, fireEvent, flushEffects } from "react-testing-library";
 import { ModalProvider } from "../ModalProvider";
 import { useModal } from "../useModal";
@@ -61,6 +61,54 @@ it("should update modal when any of the inputs change", () => {
   flushEffects();
 
   expect(getByText("Modal with input: bar")).toBeTruthy();
+});
+
+it("should not rerender when specified inputs remain unchagned", () => {
+  // Wrap modal component into jest.fn to keep count of rerenders
+  const Modal: React.SFC = jest.fn(
+    ({ children }: { children: React.ReactNode }) => (
+      <div role="dialog">{children}</div>
+    )
+  );
+
+  const Component = ({ i, j }: { i: string; j: string }) => {
+    const [showModal] = useModal(
+      () => (
+        <Modal>
+          <span>Input 1: {i}</span>
+          <span>Input 2: {j}</span>
+        </Modal>
+      ),
+      [i]
+    );
+
+    return (
+      <div>
+        <button onClick={showModal}>Show modal</button>
+      </div>
+    );
+  };
+
+  const { getByText, rerender } = renderWithProvider(
+    <Component i="foo" j="bar" />
+  );
+
+  expect(Modal).toHaveBeenCalledTimes(0);
+
+  fireEvent.click(getByText("Show modal"));
+  flushEffects();
+
+  expect(Modal).toHaveBeenCalledTimes(1);
+
+  rerender(<Component i="foo" j="baz" />);
+  flushEffects();
+
+  expect(Modal).toHaveBeenCalledTimes(1);
+
+  rerender(<Component i="bar" j="baz" />);
+  flushEffects();
+
+  expect(Modal).toHaveBeenCalledTimes(2);
 });
 
 it("should work with multiple modals", () => {
