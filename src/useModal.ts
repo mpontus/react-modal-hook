@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ModalType, ModalContext } from "./ModalContext";
 import { useGlobalId } from "./useGlobalId";
 
@@ -17,7 +17,12 @@ type HideModal = () => void;
  */
 export const useModal = (modal: ModalType): [ShowModal, HideModal] => {
   const key = useGlobalId();
-  const { showModal, hideModal } = useContext(ModalContext);
+  const context = useContext(ModalContext);
+  const [isShown, setShown] = useState<boolean>(false);
 
-  return [() => showModal(key, modal), () => hideModal(key)];
+  useEffect(() =>
+    isShown ? context.showModal(key, modal) : context.hideModal(key)
+  );
+
+  return [() => setShown(true), () => setShown(false)];
 };
