@@ -25,7 +25,7 @@ export const ModalProvider = ({ children }: ModalProviderProps) => {
         ...modals,
         [key]: modal
       })),
-    [setModals]
+    []
   );
   const hideModal = useCallback(
     (key: string) =>
@@ -34,13 +34,10 @@ export const ModalProvider = ({ children }: ModalProviderProps) => {
         delete newModals[key];
         return newModals;
       }),
-    [setModals]
+    []
   );
-
   const contextValue = useMemo(() => ({ modals, showModal, hideModal }), [
-    modals,
-    showModal,
-    hideModal
+    modals
   ]);
 
   return (
