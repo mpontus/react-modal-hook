@@ -12,18 +12,42 @@ npm install --save react-modal-hook
 
 ## Usage
 
+Use `ModalProvider` to provide modal context to your application components:
+
 ```tsx
-import * as React from 'react'
+import React from "react";
+import ReactDOM from "react-dom";
+import { ModalProvider } from "react-modal-hook";
+import App from "./App";
 
-import MyComponent from 'react-modal-hook'
+ReactDOM.render(
+  <ModalProvider>
+    <App />
+  </ModalProvider>,
+  document.getElementById("root")
+);
+``
 
-class Example extends React.Component {
-  render () {
-    return (
-      <MyComponent />
-    )
-  }
-}
+Call `useModal` in your functional component:
+
+
+``` tsx
+import React from "react";
+import { useModal } from "react-modal-hook";
+
+export const App = () => {
+  const [showModal, hideModal] = useModal(() => (
+    <div role="dialog" className="modal">
+      <span>This is a modal window</span> <a onClick={hideModal}>Close</a>
+    </div>
+  ));
+
+  return (
+    <div>
+      <a onClick={showModal}>Open modal</a>
+    </div>
+  );
+};
 ```
 
 ## License
