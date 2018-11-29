@@ -21,10 +21,11 @@ const generateModalKey = (() => {
  * React hook for showing modal windows
  */
 export const useModal = (
-  modal: ModalType,
-  inputs?: any[]
+  component: ModalType,
+  inputs: any[] = []
 ): [ShowModal, HideModal] => {
   const key = useMemo(generateModalKey, []);
+  const modal = useMemo(() => component, inputs);
   const context = useContext(ModalContext);
   const [isShown, setShown] = useState<boolean>(false);
   const showModal = useCallback(() => setShown(true), []);
@@ -41,9 +42,7 @@ export const useModal = (
       // Hide modal when parent component unmounts
       return () => context.hideModal(key);
     },
-
-    // Update modal each time unless inputs are specified
-    inputs ? [isShown, ...inputs] : undefined
+    [modal, isShown]
   );
 
   return [showModal, hideModal];

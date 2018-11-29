@@ -43,9 +43,38 @@ it("should work with single modal", () => {
   expect(queryByText("Modal content")).not.toBeTruthy();
 });
 
+it("should let the modal to close itself", () => {
+  const Component = () => {
+    const [showModal, hideModal] = useModal(() => (
+      <div>
+        <span>Modal content</span>
+        <button onClick={hideModal}>Hide modal</button>
+      </div>
+    ));
+
+    return <button onClick={showModal}>Show modal</button>;
+  };
+
+  const { getByText, queryByText } = renderWithProvider(<Component />);
+
+  expect(queryByText("Modal content")).not.toBeTruthy();
+
+  fireEvent.click(getByText("Show modal"));
+  flushEffects();
+
+  expect(getByText("Modal content")).toBeTruthy();
+
+  fireEvent.click(getByText("Hide modal"));
+  flushEffects();
+
+  expect(queryByText("Modal content")).not.toBeTruthy();
+});
+
 it("should update modal when any of the inputs change", () => {
   const Component = ({ input }: { input: string }) => {
-    const [showModal] = useModal(() => <div>Modal with input: {input}</div>);
+    const [showModal] = useModal(() => <div>Modal with input: {input}</div>, [
+      input
+    ]);
 
     return <button onClick={showModal}>Show modal</button>;
   };
@@ -63,6 +92,9 @@ it("should update modal when any of the inputs change", () => {
   expect(getByText("Modal with input: bar")).toBeTruthy();
 });
 
+// This test is there to fail if you remove component memoization,
+// since the above test will not. The above test serves as a reminder
+// that this test can not be simplified.
 it("should not rerender when specified inputs remain unchagned", () => {
   // Wrap modal component into jest.fn to keep count of rerenders
   const Modal: React.SFC = jest.fn(
