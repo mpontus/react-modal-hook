@@ -14,7 +14,7 @@ npm install --save react-modal-hook
 
 Use `ModalProvider` to provide modal context to your application components:
 
-```tsx
+```jsx
 import React from "react";
 import ReactDOM from "react-dom";
 import { ModalProvider } from "react-modal-hook";
@@ -26,12 +26,11 @@ ReactDOM.render(
   </ModalProvider>,
   document.getElementById("root")
 );
-``
+```
 
 Call `useModal` in your functional component:
 
-
-``` tsx
+```jsx
 import React from "react";
 import { useModal } from "react-modal-hook";
 
