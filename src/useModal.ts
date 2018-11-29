@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { ModalType, ModalContext } from "./ModalContext";
 import { useGlobalId } from "./useGlobalId";
 
@@ -22,13 +22,23 @@ export const useModal = (
   const key = useGlobalId();
   const context = useContext(ModalContext);
   const [isShown, setShown] = useState<boolean>(false);
+  const showModal = useCallback(() => setShown(true), []);
+  const hideModal = useCallback(() => setShown(false), []);
 
   useEffect(
-    () => (isShown ? context.showModal(key, modal) : context.hideModal(key)),
+    () => {
+      if (isShown) {
+        context.showModal(key, modal);
+      } else {
+        context.hideModal(key);
+      }
+
+      return () => context.hideModal(key);
+    },
 
     // Update modal each time unless inputs are specified
     inputs ? [isShown, ...inputs] : undefined
   );
 
-  return [() => setShown(true), () => setShown(false)];
+  return [showModal, hideModal];
 };

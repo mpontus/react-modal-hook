@@ -111,6 +111,33 @@ it("should not rerender when specified inputs remain unchagned", () => {
   expect(Modal).toHaveBeenCalledTimes(2);
 });
 
+it("should hide the modal when parent component unmounts", () => {
+  const Component = () => {
+    const [showModal] = useModal(() => <div>Modal content</div>);
+
+    return (
+      <React.Fragment>
+        <button onClick={showModal}>Show modal</button>
+      </React.Fragment>
+    );
+  };
+
+  const { getByText, queryByText, rerender } = renderWithProvider(
+    <div>
+      <Component />
+    </div>
+  );
+
+  fireEvent.click(getByText("Show modal"));
+  flushEffects();
+
+  expect(getByText("Modal content")).toBeTruthy();
+
+  rerender(<div />);
+
+  expect(queryByText("Modal content")).not.toBeTruthy();
+});
+
 it("should work with multiple modals", () => {
   const Component = () => {
     const [showFirstModal, hideFirstModal] = useModal(() => (
