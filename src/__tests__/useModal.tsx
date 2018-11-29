@@ -8,31 +8,77 @@ import { useModal } from "../useModal";
 const renderWithProvider = (content: React.ReactNode) =>
   render(<ModalProvider>{content}</ModalProvider>);
 
-// Test component which calls useModal
-const Component = () => {
-  const [showModal, hideModal] = useModal(() => <div>Modal content</div>);
+it("should work with single modal", () => {
+  const Component = () => {
+    const [showModal, hideModal] = useModal(() => <div>Modal content</div>);
 
-  return (
-    <React.Fragment>
-      <button onClick={showModal}>Show modal</button>
-      <button onClick={hideModal}>Hide modal</button>
-    </React.Fragment>
-  );
-};
+    return (
+      <React.Fragment>
+        <button onClick={showModal}>Show modal</button>
+        <button onClick={hideModal}>Hide modal</button>
+      </React.Fragment>
+    );
+  };
 
-test("showModal works", () => {
-  const { getByText } = renderWithProvider(<Component />);
+  const { getByText, queryByText } = renderWithProvider(<Component />);
+
+  expect(queryByText("Modal content")).not.toBeTruthy();
 
   fireEvent.click(getByText("Show modal"));
 
   expect(getByText("Modal content")).toBeTruthy();
-});
 
-test("hideModal works", () => {
-  const { getByText, queryByText } = renderWithProvider(<Component />);
-
-  fireEvent.click(getByText("Show modal"));
   fireEvent.click(getByText("Hide modal"));
 
   expect(queryByText("Modal content")).not.toBeTruthy();
+});
+
+it("should work with multiple modals", () => {
+  const Component = () => {
+    const [showFirstModal, hideFirstModal] = useModal(() => (
+      <div>
+        <span>First modal</span>
+      </div>
+    ));
+
+    const [showSecondModal, hideSecondModal] = useModal(() => (
+      <div>
+        <span>Second modal</span>
+      </div>
+    ));
+
+    return (
+      <React.Fragment>
+        <button onClick={hideFirstModal}>Hide first modal</button>
+        <button onClick={showFirstModal}>Show first modal</button>
+        <button onClick={showSecondModal}>Show second modal</button>
+        <button onClick={hideSecondModal}>Hide second modal</button>
+      </React.Fragment>
+    );
+  };
+
+  const { getByText, queryByText } = renderWithProvider(<Component />);
+
+  expect(queryByText("First modal")).not.toBeTruthy();
+  expect(queryByText("Second modal")).not.toBeTruthy();
+
+  fireEvent.click(getByText("Show first modal"));
+
+  expect(getByText("First modal")).toBeTruthy();
+  expect(queryByText("Second modal")).not.toBeTruthy();
+
+  fireEvent.click(getByText("Show second modal"));
+
+  expect(getByText("First modal")).toBeTruthy();
+  expect(getByText("Second modal")).toBeTruthy();
+
+  fireEvent.click(getByText("Hide first modal"));
+
+  expect(queryByText("First modal")).not.toBeTruthy();
+  expect(getByText("Second modal")).toBeTruthy();
+
+  fireEvent.click(getByText("Hide second modal"));
+
+  expect(queryByText("First modal")).not.toBeTruthy();
+  expect(queryByText("Second modal")).not.toBeTruthy();
 });

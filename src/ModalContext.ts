@@ -15,16 +15,16 @@ export type ModalType = React.ComponentType<any>;
  * Shape of the modal context
  */
 export interface ModalContextType {
-  modal: ModalType | undefined;
-  showModal(component: ModalType): void;
-  hideModal(): void;
+  modals: Record<string, ModalType>;
+  showModal(key: string, component: ModalType): void;
+  hideModal(key: string): void;
 }
 
 /**
  * Modal Context Object
  */
 export const ModalContext = React.createContext<ModalContextType>({
-  modal: undefined,
+  modals: {},
   showModal: noop,
   hideModal: noop
 });

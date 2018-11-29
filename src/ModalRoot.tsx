@@ -8,11 +8,16 @@ import { ModalContext } from "./ModalContext";
  * Renders modals using a portal.
  */
 export const ModalRoot = () => {
-  const { modal: Component } = useContext(ModalContext);
+  const { modals } = useContext(ModalContext);
 
-  if (Component === undefined) {
-    return null;
-  }
+  return ReactDOM.createPortal(
+    <React.Fragment>
+      {Object.keys(modals).map(key => {
+        const Component = modals[key];
 
-  return ReactDOM.createPortal(<Component />, document.body);
+        return <Component key={key} />;
+      })}
+    </React.Fragment>,
+    document.body
+  );
 };

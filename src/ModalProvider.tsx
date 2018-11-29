@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import { ModalType, ModalContext } from "./ModalContext";
 import { ModalRoot } from "./ModalRoot";
 
@@ -18,16 +18,33 @@ export interface ModalProviderProps {
  * Provides Modal Context to children.
  */
 export const ModalProvider = ({ children }: ModalProviderProps) => {
-  const [modal, setModal] = useState<ModalType | undefined>(undefined);
+  const [modals, setModals] = useState<Record<string, ModalType>>({});
+  const showModal = useCallback(
+    (key: string, modal: ModalType) =>
+      setModals(modals => ({
+        ...modals,
+        [key]: modal
+      })),
+    [setModals]
+  );
+  const hideModal = useCallback(
+    (key: string) =>
+      setModals(modals => {
+        const newModals = { ...modals };
+        delete newModals[key];
+        return newModals;
+      }),
+    [setModals]
+  );
+
+  const contextValue = useMemo(() => ({ modals, showModal, hideModal }), [
+    modals,
+    showModal,
+    hideModal
+  ]);
 
   return (
-    <ModalContext.Provider
-      value={{
-        modal,
-        showModal: modal => setModal(() => modal),
-        hideModal: () => setModal(undefined)
-      }}
-    >
+    <ModalContext.Provider value={contextValue}>
       <React.Fragment>
         {children}
         <ModalRoot />
