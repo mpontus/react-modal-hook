@@ -5,8 +5,10 @@ import "./index.css";
 import App from "./App";
 
 ReactDOM.render(
-  <ModalProvider>
-    <App />
-  </ModalProvider>,
+  <div>
+    <ModalProvider>
+      <App />
+    </ModalProvider>
+  </div>,
   document.getElementById("root")
 );
