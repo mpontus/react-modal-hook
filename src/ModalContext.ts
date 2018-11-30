@@ -3,7 +3,11 @@ import React from "react";
 /**
  * Placeholder for context callbacks
  */
-const noop = () => undefined;
+const noop = () => {
+  throw new Error(
+    "Attempted to call useModal outside of modal context. Make sure your app is rendered inside ModalProvider."
+  );
+};
 
 /**
  * Modals, represented as stateless functions, are react

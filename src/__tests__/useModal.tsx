@@ -150,3 +150,33 @@ describe("multiple modals", () => {
     expect(queryByText("Second modal content")).toBeTruthy();
   });
 });
+
+describe("calling useModal without ModalProvider", () => {
+  class ErrorBoundary extends React.Component {
+    componentDidCatch() {}
+
+    render() {
+      return this.props.children;
+    }
+  }
+
+  const App = () => {
+    useModal(() => <div>Modal content</div>);
+
+    return null;
+  };
+
+  it("should throw an error", () => {
+    const catchError = jest.fn((e: Event) => e.preventDefault());
+    window.addEventListener("error", catchError);
+
+    render(
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    );
+    flushEffects();
+
+    expect(catchError).toHaveBeenCalledTimes(1);
+  });
+});
