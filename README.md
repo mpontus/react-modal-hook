@@ -72,6 +72,56 @@ const App = ({ task, requestPending, onDelete }) => {
 };
 ```
 
+### Animated Modals
+
+You can customize the container component for modals using `container` prop on `ModalProvider`.
+
+Using `TransitionGroup`, or a simliar component which tracks changes to children, will allow you to delay modal removal until exit animation finishes.
+
+``` jsx
+import React from "react";
+import ReactDOM from "react-dom";
+import { ModalProvider } from "react-modal-hook";
+import { TransitionGroup } from "react-transition-group";
+import App from "./App";
+
+ReactDOM.render(
+  <ModalProvider container={TransitionGroup}>
+    <App />
+  </ModalProvider>,
+  document.getElementById("root")
+);
+```
+
+`TransitionGroup` will inject several props which you should pass to transition component.
+
+Example below is given for Material-UI's dialog:
+
+``` jsx
+const App = () => {
+  const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
+    <Dialog
+      open={open}
+      onExited={onExited}
+      onClose={hideModal}
+      aria-labelledby="example-dialog-title"
+    >
+      <DialogTitle id="example-dialog-title">Example</DialogTitle>
+      <DialogContent>
+        <DialogContentText>This is a modal window</DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button color="primary" onClick={hideModal}>
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  ));
+
+  return <Button onClick={showModal}>Show modal</Button>;
+};
+```
+
 ## License
 
 MIT © [mpontus](https://github.com/mpontus)

@@ -36,6 +36,7 @@
     "babel-runtime": "^6.26.0",
     "cross-env": "^5.1.4",
     "gh-pages": "^1.2.0",
+    "jest-dom": "^2.1.1",
     "react": "^16.7.0-alpha.2",
     "react-dom": "16.7.0-alpha.2",
     "react-scripts-ts": "^2.16.0",
