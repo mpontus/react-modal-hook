@@ -2,14 +2,13 @@ import { useContext, useEffect, useState, useCallback, useMemo } from "react";
 import { ModalType, ModalContext } from "./ModalContext";
 
 /**
- * Callback types provided for descriptive IDE type-hints.
+ * Callback types provided for descriptive type-hints
  */
 type ShowModal = () => void;
 type HideModal = () => void;
 
 /**
  * Utility function to generate unique number per component instance
- * based on the number of invocations.
  */
 const generateModalKey = (() => {
   let count = 0;

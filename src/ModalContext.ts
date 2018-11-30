@@ -1,22 +1,14 @@
 import React from "react";
 
 /**
- * Placeholder for context callbacks
- */
-const noop = () => {
-  throw new Error(
-    "Attempted to call useModal outside of modal context. Make sure your app is rendered inside ModalProvider."
-  );
-};
-
-/**
- * Modals, represented as stateless functions, are react
- * components, but class components will work also.
+ * Modals are represented as react components
+ *
+ * This is what gets passed to useModal as the first argument.
  */
 export type ModalType = React.ComponentType<any>;
 
 /**
- * Shape of the modal context
+ * The shape of the modal context
  */
 export interface ModalContextType {
   modals: Record<string, ModalType>;
@@ -25,10 +17,19 @@ export interface ModalContextType {
 }
 
 /**
+ * Throw error when ModalContext is used outside of context provider
+ */
+const invariantViolation = () => {
+  throw new Error(
+    "Attempted to call useModal outside of modal context. Make sure your app is rendered inside ModalProvider."
+  );
+};
+
+/**
  * Modal Context Object
  */
 export const ModalContext = React.createContext<ModalContextType>({
   modals: {},
-  showModal: noop,
-  hideModal: noop
+  showModal: invariantViolation,
+  hideModal: invariantViolation
 });

@@ -9,8 +9,9 @@ interface ModalRootProps {
   /**
    * Container component for modals
    *
-   * Modals will be rendered into a portal as children of the
-   * specified component. React.Fragment is used by default.
+   * Modals will be rendered as children of this component. React.Fragment is
+   * used by defualt, specifying a different component can change the way modals
+   * are rendered across the whole application.
    */
   container?: React.ComponentType<any>;
 }
@@ -18,12 +19,11 @@ interface ModalRootProps {
 /**
  * Modal Root
  *
- * Renders modals using a portal.
+ * Renders modals using react portal.
  */
 export const ModalRoot = memo(
-  ({ container = React.Fragment }: ModalRootProps) => {
+  ({ container: Container = React.Fragment }: ModalRootProps) => {
     const { modals } = useContext(ModalContext);
-    const Container = container;
 
     return ReactDOM.createPortal(
       <Container>

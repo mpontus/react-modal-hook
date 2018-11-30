@@ -7,15 +7,12 @@ import { ModalRoot } from "./ModalRoot";
  */
 export interface ModalProviderProps {
   /**
-   * Container component for modals
-   *
-   * Modals will be rendered into a portal as children of the
-   * specified component. React.Fragment is used by default.
+   * Container component for modals that will be passed to ModalRoot
    */
   container?: React.ComponentType<any>;
 
   /**
-   * Children which will receive Modal Context
+   * Subtree that will receive modal context
    */
   children: React.ReactNode;
 }
@@ -23,7 +20,7 @@ export interface ModalProviderProps {
 /**
  * Modal Provider
  *
- * Provides Modal Context to children.
+ * Provides modal context and renders ModalRoot.
  */
 export const ModalProvider = ({ container, children }: ModalProviderProps) => {
   const [modals, setModals] = useState<Record<string, ModalType>>({});
