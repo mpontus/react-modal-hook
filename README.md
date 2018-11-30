@@ -34,18 +34,15 @@ Call `useModal` in your functional component:
 import React from "react";
 import { useModal } from "react-modal-hook";
 
-export const App = () => {
+const App = () => {
   const [showModal, hideModal] = useModal(() => (
     <div role="dialog" className="modal">
-      <span>This is a modal window</span> <a onClick={hideModal}>Close</a>
+      <p>This is a modal window</p>
+      <button onClick={hideModal}>Close</button>
     </div>
   ));
 
-  return (
-    <div>
-      <a onClick={showModal}>Open modal</a>
-    </div>
-  );
+  return <button onClick={showModal}>Show modal</button>;
 };
 ```
 
