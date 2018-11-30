@@ -1,8 +1,16 @@
 # react-modal-hook
 
-> React hook for showing modal windows
+[![NPM](https://img.shields.io/npm/v/react-modal-hook.svg)](https://www.npmjs.com/package/react-modal-hook)
 
-[![NPM](https://img.shields.io/npm/v/react-modal-hook.svg)](https://www.npmjs.com/package/react-modal-hook) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+> Modal windows made easy with react hooks
+
+## Table of Contents
+
+- [Install](#install)
+- [Usage](#usage)
+  - [Updating Modals](#updating-modals)
+  - [Animated Modals](#animated-modals)
+- [License](#license)
 
 ## Install
 
@@ -12,7 +20,7 @@ npm install --save react-modal-hook
 
 ## Usage
 
-Use `ModalProvider` to provide modal context to your application components:
+Use `ModalProvider` to provide modal context for your application:
 
 ```jsx
 import React from "react";
@@ -28,7 +36,7 @@ ReactDOM.render(
 );
 ```
 
-Call `useModal` in your functional component:
+Call `useModal` to receive modal callbacks in your functional component:
 
 ```jsx
 import React from "react";
@@ -48,7 +56,7 @@ const App = () => {
 
 ### Updating Modals
 
-`useModal` accepts a second argument, which should be an array of inputs referenced inside modal callback.
+Second argument to `useModals` should contain an array of values referenced inside the modal:
 
 ``` jsx
 const App = () => {
@@ -67,7 +75,7 @@ const App = () => {
 };
 ```
 
-Keep in mind, that modals themselves are functional components, and can also use react hooks:
+Modals are also functional components and can use react hooks themselves:
 
 ``` jsx
 const App = () => {
@@ -88,9 +96,7 @@ const App = () => {
 
 ### Animated Modals
 
-You can customize the container component for modals using `container` prop on `ModalProvider`.
-
-Using `TransitionGroup`, or a simliar component which tracks changes to children, will allow you to delay modal removal until exit animation finishes.
+Use [`TransitionGroup`](https://github.com/reactjs/react-transition-group) as the modals container:
 
 ``` jsx
 import React from "react";
@@ -107,27 +113,21 @@ ReactDOM.render(
 );
 ```
 
-`TransitionGroup` will inject several props which you should pass to transition component.
+When `TransitionGroup` detects of one of its children being removed, it will set its `in` prop to `false`, and wait for `onExited` callback to be called at the end of the animation.
 
-Example below is given for Material-UI's dialog:
+You will receive those props in the function you pass to `useModal` and can translate them to the transition props of your modal component:
 
 ``` jsx
+import React from "react";
+import { useModal } from "react-modal-hook";
+import { Button, Dialog, DialogActions, DialogTitle } from "@material-ui/core";
+
 const App = () => {
   const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
-    <Dialog
-      open={open}
-      onExited={onExited}
-      onClose={hideModal}
-      aria-labelledby="example-dialog-title"
-    >
-      <DialogTitle id="example-dialog-title">Example</DialogTitle>
-      <DialogContent>
-        <DialogContentText>This is a modal window</DialogContentText>
-      </DialogContent>
+    <Dialog open={open} onExited={onExited}>
+      <DialogTitle>Dialog Content</DialogTitle>
       <DialogActions>
-        <Button color="primary" onClick={hideModal}>
-          Close
-        </Button>
+        <Button onClick={hideModal}>Close</Button>
       </DialogActions>
     </Dialog>
   ));
