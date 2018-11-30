@@ -4,6 +4,8 @@
 
 > Modal windows made easy with react hooks
 
+[**Demo** (Material-UI)](https://codesandbox.io/s/v8qy4w1j77)
+
 ## Table of Contents
 
 - [Install](#install)
