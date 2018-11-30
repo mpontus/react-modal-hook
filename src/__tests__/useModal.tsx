@@ -1,5 +1,5 @@
 import "react-testing-library/cleanup-after-each";
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { render, fireEvent, flushEffects } from "react-testing-library";
 import { ModalProvider } from "../ModalProvider";
 import { useModal } from "../useModal";
@@ -16,38 +16,11 @@ const renderWithProvider: typeof render = (ui, options) => {
   };
 };
 
-it("should work with single modal", () => {
-  const Component = () => {
-    const [showModal, hideModal] = useModal(() => <div>Modal content</div>);
-
-    return (
-      <React.Fragment>
-        <button onClick={showModal}>Show modal</button>
-        <button onClick={hideModal}>Hide modal</button>
-      </React.Fragment>
-    );
-  };
-
-  const { getByText, queryByText } = renderWithProvider(<Component />);
-
-  expect(queryByText("Modal content")).not.toBeTruthy();
-
-  fireEvent.click(getByText("Show modal"));
-  flushEffects();
-
-  expect(getByText("Modal content")).toBeTruthy();
-
-  fireEvent.click(getByText("Hide modal"));
-  flushEffects();
-
-  expect(queryByText("Modal content")).not.toBeTruthy();
-});
-
-it("should let the modal to close itself", () => {
-  const Component = () => {
+describe("simple usage", () => {
+  const App = () => {
     const [showModal, hideModal] = useModal(() => (
       <div>
-        <span>Modal content</span>
+        <p>Modal content</p>
         <button onClick={hideModal}>Hide modal</button>
       </div>
     ));
@@ -55,171 +28,125 @@ it("should let the modal to close itself", () => {
     return <button onClick={showModal}>Show modal</button>;
   };
 
-  const { getByText, queryByText } = renderWithProvider(<Component />);
+  it("should show the modal", () => {
+    const { getByText, queryByText } = renderWithProvider(<App />);
 
-  expect(queryByText("Modal content")).not.toBeTruthy();
+    fireEvent.click(getByText("Show modal"));
+    flushEffects();
 
-  fireEvent.click(getByText("Show modal"));
-  flushEffects();
+    expect(queryByText("Modal content")).toBeTruthy();
+  });
 
-  expect(getByText("Modal content")).toBeTruthy();
+  it("should hide the modal", () => {
+    const { getByText, queryByText } = renderWithProvider(<App />);
 
-  fireEvent.click(getByText("Hide modal"));
-  flushEffects();
+    fireEvent.click(getByText("Show modal"));
+    flushEffects();
 
-  expect(queryByText("Modal content")).not.toBeTruthy();
-});
+    fireEvent.click(getByText("Hide modal"));
+    flushEffects();
 
-it("should update modal when any of the inputs change", () => {
-  const Component = ({ input }: { input: string }) => {
-    const [showModal] = useModal(() => <div>Modal with input: {input}</div>, [
-      input
-    ]);
+    expect(queryByText("Modal content")).not.toBeTruthy();
+  });
 
-    return <button onClick={showModal}>Show modal</button>;
-  };
-
-  const { getByText, rerender } = renderWithProvider(<Component input="foo" />);
-
-  fireEvent.click(getByText("Show modal"));
-  flushEffects();
-
-  expect(getByText("Modal with input: foo")).toBeTruthy();
-
-  rerender(<Component input="bar" />);
-  flushEffects();
-
-  expect(getByText("Modal with input: bar")).toBeTruthy();
-});
-
-// This test is there to fail if you remove component memoization,
-// since the above test will not. The above test serves as a reminder
-// that this test can not be simplified.
-it("should not rerender when specified inputs remain unchagned", () => {
-  // Wrap modal component into jest.fn to keep count of rerenders
-  const Modal: React.SFC = jest.fn(
-    ({ children }: { children: React.ReactNode }) => (
-      <div role="dialog">{children}</div>
-    )
-  );
-
-  const Component = ({ i, j }: { i: string; j: string }) => {
-    const [showModal] = useModal(
-      () => (
-        <Modal>
-          <span>Input 1: {i}</span>
-          <span>Input 2: {j}</span>
-        </Modal>
-      ),
-      [i]
-    );
-
-    return (
+  it("should hide the modal when parent component unmounts", () => {
+    const { getByText, queryByText, rerender } = renderWithProvider(
       <div>
-        <button onClick={showModal}>Show modal</button>
+        <App />
       </div>
     );
-  };
 
-  const { getByText, rerender } = renderWithProvider(
-    <Component i="foo" j="bar" />
-  );
+    fireEvent.click(getByText("Show modal"));
+    flushEffects();
 
-  expect(Modal).toHaveBeenCalledTimes(0);
+    rerender(<div />);
+    flushEffects();
 
-  fireEvent.click(getByText("Show modal"));
-  flushEffects();
-
-  expect(Modal).toHaveBeenCalledTimes(1);
-
-  rerender(<Component i="foo" j="baz" />);
-  flushEffects();
-
-  expect(Modal).toHaveBeenCalledTimes(1);
-
-  rerender(<Component i="bar" j="baz" />);
-  flushEffects();
-
-  expect(Modal).toHaveBeenCalledTimes(2);
+    expect(queryByText("Modal content")).not.toBeTruthy();
+  });
 });
 
-it("should hide the modal when parent component unmounts", () => {
-  const Component = () => {
-    const [showModal] = useModal(() => <div>Modal content</div>);
+describe("updating modal", () => {
+  it("should work with internal state", () => {
+    const App = () => {
+      const [showModal] = useModal(() => {
+        const [count, setCount] = useState(0);
 
-    return (
-      <React.Fragment>
-        <button onClick={showModal}>Show modal</button>
-      </React.Fragment>
-    );
-  };
+        return (
+          <div>
+            <span>The count is {count}</span>
+            <button onClick={() => setCount(count + 1)}>Increment</button>
+          </div>
+        );
+      });
 
-  const { getByText, queryByText, rerender } = renderWithProvider(
-    <div>
-      <Component />
-    </div>
-  );
+      return <button onClick={showModal}>Show modal</button>;
+    };
 
-  fireEvent.click(getByText("Show modal"));
-  flushEffects();
+    const { getByText, queryByText } = renderWithProvider(<App />);
 
-  expect(getByText("Modal content")).toBeTruthy();
+    fireEvent.click(getByText("Show modal"));
+    flushEffects();
 
-  rerender(<div />);
+    expect(queryByText("The count is 0")).toBeTruthy();
 
-  expect(queryByText("Modal content")).not.toBeTruthy();
+    fireEvent.click(getByText("Increment"));
+    flushEffects();
+
+    expect(queryByText("The count is 1")).toBeTruthy();
+  });
+
+  it("should work with external state", () => {
+    const App = () => {
+      const [count, setCount] = useState(0);
+      const [showModal] = useModal(
+        () => (
+          <div>
+            <span>The count is {count}</span>
+            <button onClick={() => setCount(count + 1)}>Increment</button>
+          </div>
+        ),
+        [count]
+      );
+
+      return <button onClick={showModal}>Show modal</button>;
+    };
+
+    const { getByText, queryByText } = renderWithProvider(<App />);
+
+    fireEvent.click(getByText("Show modal"));
+    flushEffects();
+
+    expect(queryByText("The count is 0")).toBeTruthy();
+
+    fireEvent.click(getByText("Increment"));
+    flushEffects();
+
+    expect(queryByText("The count is 1")).toBeTruthy();
+  });
 });
 
-it("should work with multiple modals", () => {
-  const Component = () => {
-    const [showFirstModal, hideFirstModal] = useModal(() => (
-      <div>
-        <span>First modal</span>
-      </div>
-    ));
+describe("multiple modals", () => {
+  it("should show multiple modals at the same time", () => {
+    const App = () => {
+      const [showFirstModal] = useModal(() => <div>First modal content</div>);
+      const [showSecondModal] = useModal(() => <div>Second modal content</div>);
 
-    const [showSecondModal, hideSecondModal] = useModal(() => (
-      <div>
-        <span>Second modal</span>
-      </div>
-    ));
+      return (
+        <div>
+          <button onClick={showFirstModal}>Show first modal</button>
+          <button onClick={showSecondModal}>Show second modal</button>
+        </div>
+      );
+    };
 
-    return (
-      <React.Fragment>
-        <button onClick={hideFirstModal}>Hide first modal</button>
-        <button onClick={showFirstModal}>Show first modal</button>
-        <button onClick={showSecondModal}>Show second modal</button>
-        <button onClick={hideSecondModal}>Hide second modal</button>
-      </React.Fragment>
-    );
-  };
+    const { getByText, queryByText } = renderWithProvider(<App />);
 
-  const { getByText, queryByText } = renderWithProvider(<Component />);
+    fireEvent.click(getByText("Show first modal"));
+    fireEvent.click(getByText("Show second modal"));
+    flushEffects();
 
-  expect(queryByText("First modal")).not.toBeTruthy();
-  expect(queryByText("Second modal")).not.toBeTruthy();
-
-  fireEvent.click(getByText("Show first modal"));
-  flushEffects();
-
-  expect(getByText("First modal")).toBeTruthy();
-  expect(queryByText("Second modal")).not.toBeTruthy();
-
-  fireEvent.click(getByText("Show second modal"));
-  flushEffects();
-
-  expect(getByText("First modal")).toBeTruthy();
-  expect(getByText("Second modal")).toBeTruthy();
-
-  fireEvent.click(getByText("Hide first modal"));
-  flushEffects();
-
-  expect(queryByText("First modal")).not.toBeTruthy();
-  expect(getByText("Second modal")).toBeTruthy();
-
-  fireEvent.click(getByText("Hide second modal"));
-  flushEffects();
-
-  expect(queryByText("First modal")).not.toBeTruthy();
-  expect(queryByText("Second modal")).not.toBeTruthy();
+    expect(queryByText("First modal content")).toBeTruthy();
+    expect(queryByText("Second modal content")).toBeTruthy();
+  });
 });

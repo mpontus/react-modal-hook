@@ -37,8 +37,8 @@ import { useModal } from "react-modal-hook";
 const App = () => {
   const [showModal, hideModal] = useModal(() => (
     <div role="dialog" className="modal">
-      <p>This is a modal window</p>
-      <button onClick={hideModal}>Close</button>
+      <p>Modal content</p>
+      <button onClick={hideModal}>Hide modal</button>
     </div>
   ));
 
@@ -51,24 +51,38 @@ const App = () => {
 `useModal` accepts a second argument, which should be an array of inputs referenced inside modal callback.
 
 ``` jsx
-const App = ({ task, requestPending, onDelete }) => {
+const App = () => {
   const [count, setCount] = useState(0);
-  const [showModal, hideModal] = useModal(
+  const [showModal] = useModal(
     () => (
       <div role="dialog" className="modal">
-        <p>Count is: {count}</p>
-        <button onClick={hideModal}>Close</button>
-        <button onClick={() => setCount(n => n + 1)}>Increment count</button>
+        <span>The count is {count}</span>
+        <button onClick={() => setCount(count + 1)}>Increment</button>
       </div>
     ),
     [count]
   );
 
-  return (
-    <div>
-      <button onClick={showModal}>Show modal</button>
-    </div>
-  );
+  return <button onClick={showModal}>Show modal</button>;
+};
+```
+
+Keep in mind, that modals themselves are functional components, and can also use react hooks:
+
+``` jsx
+const App = () => {
+  const [showModal] = useModal(() => {
+    const [count, setCount] = useState(0);
+
+    return (
+      <div role="dialog" className="modal">
+        <span>The count is {count}</span>
+        <button onClick={() => setCount(count + 1)}>Increment</button>
+      </div>
+    );
+  });
+
+  return <button onClick={showModal}>Show modal</button>;
 };
 ```
 
