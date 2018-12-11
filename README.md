@@ -1,6 +1,11 @@
 # react-modal-hook
 
-[![NPM](https://img.shields.io/npm/v/react-modal-hook.svg)](https://www.npmjs.com/package/react-modal-hook)
+[![](https://img.shields.io/npm/v/react-modal-hook.svg)](https://www.npmjs.com/package/react-modal-hook)
+[![](https://img.shields.io/bundlephobia/minzip/react-modal-hook.svg)](https://www.npmjs.com/package/react-modal-hook)
+[![](https://img.shields.io/david/mpontus/react-modal-hook.svg)](https://david-dm.org/mpontus/react-modal-hook)
+[![](https://img.shields.io/npm/dt/react-modal-hook.svg)](https://www.npmjs.com/package/react-modal-hook)
+[![](https://img.shields.io/travis/mpontus/react-modal-hook.svg)](https://travis-ci.org/mpontus/react-modal-hook)
+[![](https://img.shields.io/codecov/c/github/mpontus/react-modal-hook.svg)](https://codecov.io/gh/mpontus/react-modal-hook)
 
 Syntactic sugar for handling modal windows using React Hooks.
 
