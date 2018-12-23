@@ -1,13 +1,17 @@
+> This library is using React API available in `react-16.7.0-alpha` scheduled for release in the [first quarter of 2019](https://reactjs.org/blog/2018/11/27/react-16-roadmap.html#tldr).
+
 # react-modal-hook
 
 [![](https://img.shields.io/npm/v/react-modal-hook.svg)](https://www.npmjs.com/package/react-modal-hook)
-[![](https://img.shields.io/bundlephobia/minzip/react-modal-hook.svg)](https://www.npmjs.com/package/react-modal-hook)
-[![](https://img.shields.io/david/mpontus/react-modal-hook.svg)](https://david-dm.org/mpontus/react-modal-hook)
-[![](https://img.shields.io/npm/dt/react-modal-hook.svg)](https://www.npmjs.com/package/react-modal-hook)
 [![](https://img.shields.io/travis/mpontus/react-modal-hook.svg)](https://travis-ci.org/mpontus/react-modal-hook)
 [![](https://img.shields.io/codecov/c/github/mpontus/react-modal-hook.svg)](https://codecov.io/gh/mpontus/react-modal-hook)
+[![](https://img.shields.io/npm/dt/react-modal-hook.svg)](https://www.npmjs.com/package/react-modal-hook)
 
-Syntactic sugar for handling modal windows using React Hooks.
+> Syntactic sugar for handling modal windows using React Hooks.
+
+This library does not provide any UI, but instead offers a convenient way to render modal components defined elsewhere.
+
+For a simple modal component check out [`react-modal`](https://github.com/reactjs/react-modal), which works well with this library.
 
 [**Demo** (Material-UI)](https://codesandbox.io/s/v8qy4w1j77)
 
@@ -43,18 +47,19 @@ ReactDOM.render(
 );
 ```
 
-Call `useModal` to receive modal handles in your functional component:
+Call `useModal` with the dialog component of your choice. Example using [`react-modal`](https://github.com/reactjs/react-modal):
 
 ```jsx
 import React from "react";
+import ReactModal from "react-modal";
 import { useModal } from "react-modal-hook";
 
 const App = () => {
   const [showModal, hideModal] = useModal(() => (
-    <div role="dialog" className="modal">
+    <ReactModal isOpen>
       <p>Modal content</p>
       <button onClick={hideModal}>Hide modal</button>
-    </div>
+    </ReactModal>
   ));
 
   return <button onClick={showModal}>Show modal</button>;
@@ -70,10 +75,10 @@ const App = () => {
   const [count, setCount] = useState(0);
   const [showModal] = useModal(
     () => (
-      <div role="dialog" className="modal">
+      <ReactModal isOpen>
         <span>The count is {count}</span>
         <button onClick={() => setCount(count + 1)}>Increment</button>
-      </div>
+      </ReactModal>
     ),
     [count]
   );
@@ -90,10 +95,10 @@ const App = () => {
     const [count, setCount] = useState(0);
 
     return (
-      <div role="dialog" className="modal">
+      <ReactModal isOpen>
         <span>The count is {count}</span>
         <button onClick={() => setCount(count + 1)}>Increment</button>
-      </div>
+      </ReactModal>
     );
   });
 
