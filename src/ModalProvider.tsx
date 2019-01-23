@@ -41,15 +41,13 @@ export const ModalProvider = ({ container, children }: ModalProviderProps) => {
       }),
     []
   );
-  const contextValue = useMemo(() => ({ modals, showModal, hideModal }), [
-    modals
-  ]);
+  const contextValue = useMemo(() => ({ showModal, hideModal }), []);
 
   return (
     <ModalContext.Provider value={contextValue}>
       <React.Fragment>
         {children}
-        <ModalRoot container={container} />
+        <ModalRoot modals={modals} container={container} />
       </React.Fragment>
     </ModalContext.Provider>
   );

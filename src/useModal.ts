@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, useCallback, useMemo } from "react";
-import { ModalType, ModalContext } from "./ModalContext";
+import { ModalContext, ModalType } from "./ModalContext";
 
 /**
  * Callback types provided for descriptive type-hints

@@ -11,7 +11,6 @@ export type ModalType = React.ComponentType<any>;
  * The shape of the modal context
  */
 export interface ModalContextType {
-  modals: Record<string, ModalType>;
   showModal(key: string, component: ModalType): void;
   hideModal(key: string): void;
 }
@@ -29,7 +28,6 @@ const invariantViolation = () => {
  * Modal Context Object
  */
 export const ModalContext = React.createContext<ModalContextType>({
-  modals: {},
   showModal: invariantViolation,
   hideModal: invariantViolation
 });

@@ -1,11 +1,16 @@
-import React, { useContext, memo } from "react";
+import React, { memo } from "react";
 import ReactDOM from "react-dom";
-import { ModalContext } from "./ModalContext";
+import { ModalType } from "./ModalContext";
 
 /**
  * Modal Root Props
  */
 interface ModalRootProps {
+  /**
+   * Map of modal instances associated by unique ids
+   */
+  modals: Record<string, ModalType>;
+
   /**
    * Container component for modals
    *
@@ -22,9 +27,7 @@ interface ModalRootProps {
  * Renders modals using react portal.
  */
 export const ModalRoot = memo(
-  ({ container: Container = React.Fragment }: ModalRootProps) => {
-    const { modals } = useContext(ModalContext);
-
+  ({ modals, container: Container = React.Fragment }: ModalRootProps) => {
     return ReactDOM.createPortal(
       <Container>
         {Object.keys(modals).map(key => {
