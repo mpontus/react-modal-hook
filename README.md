@@ -1,5 +1,3 @@
-> This library is using React API available in `react-16.7.0-alpha` scheduled for release in the [first quarter of 2019](https://reactjs.org/blog/2018/11/27/react-16-roadmap.html#tldr).
-
 # react-modal-hook
 
 [![](https://img.shields.io/npm/v/react-modal-hook.svg)](https://www.npmjs.com/package/react-modal-hook)

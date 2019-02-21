@@ -1,6 +1,6 @@
 {
   "name": "react-modal-hook",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "React hook for showing modal windows",
   "author": "mpontus",
   "license": "MIT",
@@ -24,8 +24,8 @@
   "dependencies": {},
   "peerDependencies": {
     "prop-types": "^15.5.4",
-    "react": "^16.7.0-alpha.0",
-    "react-dom": "16.7.0-alpha.0"
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3"
   },
   "devDependencies": {
     "@svgr/rollup": "^2.4.1",
@@ -37,8 +37,8 @@
     "cross-env": "^5.1.4",
     "gh-pages": "^1.2.0",
     "jest-dom": "^2.1.1",
-    "react": "^16.7.0-alpha.2",
-    "react-dom": "16.7.0-alpha.2",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3",
     "react-scripts-ts": "^2.16.0",
     "react-testing-library": "^5.3.1",
     "rollup": "^0.62.0",
