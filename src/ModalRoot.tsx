@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { ModalType } from "./ModalContext";
 
@@ -28,7 +28,12 @@ interface ModalRootProps {
  */
 export const ModalRoot = memo(
   ({ modals, container: Container = React.Fragment }: ModalRootProps) => {
-    return ReactDOM.createPortal(
+    const [mountNode, setMountNode] = useState<Element | undefined>(undefined);
+
+    // This effect will not be ran in the server environment
+    useEffect(() => setMountNode(document.body));
+
+    return mountNode ? ReactDOM.createPortal(
       <Container>
         {Object.keys(modals).map(key => {
           const Component = modals[key];
@@ -37,6 +42,6 @@ export const ModalRoot = memo(
         })}
       </Container>,
       document.body
-    );
+    ) : null;
   }
 );
