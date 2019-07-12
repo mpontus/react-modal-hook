@@ -124,6 +124,46 @@ describe("updating modal", () => {
 
     expect(queryByText("The count is 1")).toBeTruthy();
   });
+
+  it("should not rerender when external state changes", () => {
+    const mountCounter = jest.fn();
+
+    class MountSpy extends React.Component {
+      componentDidMount() {
+        mountCounter();
+      }
+
+      render() {
+        return null;
+      }
+    }
+
+    const App = () => {
+      const [count, setCount] = useState(0);
+      const [showModal] = useModal(
+        () => (
+          <div>
+            <MountSpy />
+            <span>The count is {count}</span>
+            <button onClick={() => setCount(count + 1)}>Increment</button>
+          </div>
+        ),
+        [count]
+      );
+
+      return <button onClick={showModal}>Show modal</button>;
+    };
+
+    const { getByText } = renderWithProvider(<App />);
+
+    fireEvent.click(getByText("Show modal"));
+    flushEffects();
+
+    fireEvent.click(getByText("Increment"));
+    flushEffects();
+
+    expect(mountCounter).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("multiple modals", () => {
