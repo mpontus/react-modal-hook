@@ -5,7 +5,7 @@ import React from "react";
  *
  * This is what gets passed to useModal as the first argument.
  */
-export type ModalType = React.ComponentType<any>;
+export type ModalType = React.FunctionComponent<any>;
 
 /**
  * The shape of the modal context

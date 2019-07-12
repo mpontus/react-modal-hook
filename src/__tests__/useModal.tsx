@@ -153,6 +153,8 @@ describe("multiple modals", () => {
 
 describe("calling useModal without ModalProvider", () => {
   class ErrorBoundary extends React.Component {
+    static getDerivedStateFromError() {}
+
     componentDidCatch() {}
 
     render() {
@@ -177,6 +179,50 @@ describe("calling useModal without ModalProvider", () => {
     );
     flushEffects();
 
-    expect(catchError).toHaveBeenCalledTimes(1);
+    expect(catchError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: expect.stringMatching(
+          /Attempted to call useModal outside of modal context/
+        )
+      })
+    );
+  });
+});
+
+describe("calling useModal with class component", () => {
+  class Modal extends React.Component {
+    render() {
+      return <div>Modal content</div>;
+    }
+  }
+
+  const App = () => {
+    useModal(Modal as any);
+
+    return null;
+  };
+
+  beforeEach(() => {
+    jest.spyOn(console, "error");
+    (global.console.error as any).mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    (global.console.error as any).mockRestore();
+  });
+
+  it("should throw an error", () => {
+    const catchError = jest.fn((e: Event) => e.preventDefault());
+    window.addEventListener("error", catchError);
+
+    expect(() => {
+      renderWithProvider(<App />);
+    }).toThrowError(
+      expect.objectContaining({
+        message: expect.stringMatching(
+          /Only stateless components can be used as an argument to useModal/
+        )
+      })
+    );
   });
 });
