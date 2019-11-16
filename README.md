@@ -127,7 +127,7 @@ When `TransitionGroup` detects of one of its children removed, it will set its `
 
 Those props are automatically added to all components passed to `useModal`. You can can pass them down to [`CSSTransition`](http://reactcommunity.org/react-transition-group/css-transition/) or modal component with transition support.
 
-Here's an example using Material-UI's [`Dialog`](https://material-ui.com/demos/dialogs/):
+Here's an example using Material-UI's [`Dialog`](https://material-ui.com/components/dialogs/):
 
 ```jsx
 import React from "react";
@@ -136,7 +136,7 @@ import { Button, Dialog, DialogActions, DialogTitle } from "@material-ui/core";
 
 const App = () => {
   const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
-    <Dialog open={open} onExited={onExited}>
+    <Dialog open={open} onExited={onExited} onClose={hideModal}>
       <DialogTitle>Dialog Content</DialogTitle>
       <DialogActions>
         <Button onClick={hideModal}>Close</Button>
