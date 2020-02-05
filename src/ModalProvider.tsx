@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, isValidElement } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import { ModalType, ModalContext } from "./ModalContext";
 import { ModalRoot } from "./ModalRoot";
 
