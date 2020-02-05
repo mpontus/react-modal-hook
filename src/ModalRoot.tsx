@@ -19,6 +19,11 @@ interface ModalRootProps {
    * are rendered across the whole application.
    */
   component?: React.ComponentType<any>;
+
+  /**
+   * Specifies the root element to render modals into
+   */
+  container?: Element;
 }
 
 /**
@@ -48,11 +53,15 @@ const ModalRenderer = memo(({ component, ...rest }: ModalRendererProps) =>
  * Renders modals using react portal.
  */
 export const ModalRoot = memo(
-  ({ modals, component: RootComponent = React.Fragment }: ModalRootProps) => {
+  ({
+    modals,
+    container,
+    component: RootComponent = React.Fragment
+  }: ModalRootProps) => {
     const [mountNode, setMountNode] = useState<Element | undefined>(undefined);
 
     // This effect will not be ran in the server environment
-    useEffect(() => setMountNode(document.body));
+    useEffect(() => setMountNode(container || document.body));
 
     return mountNode
       ? ReactDOM.createPortal(
@@ -61,7 +70,7 @@ export const ModalRoot = memo(
               <ModalRenderer key={key} component={modals[key]} />
             ))}
           </RootComponent>,
-          document.body
+          mountNode
         )
       : null;
   }

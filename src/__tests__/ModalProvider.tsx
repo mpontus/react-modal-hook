@@ -1,7 +1,14 @@
 import React from "react";
-import { render, fireEvent, flushEffects } from "react-testing-library";
+import {
+  cleanup,
+  render,
+  fireEvent,
+  flushEffects
+} from "react-testing-library";
 import { ModalProvider, useModal } from "..";
 import "jest-dom/extend-expect";
+
+afterEach(cleanup);
 
 describe("custom container prop", () => {
   const RootComponent: React.SFC = ({ children }) => (
@@ -27,5 +34,22 @@ describe("custom container prop", () => {
     expect(getByTestId("custom-root")).toContainElement(
       getByText("This is a modal")
     );
+  });
+
+  it("should render modals inside the specified root element", () => {
+    const customRoot = document.createElement("div");
+
+    document.body.appendChild(customRoot);
+
+    const { getByText } = render(
+      <ModalProvider container={customRoot}>
+        <App />
+      </ModalProvider>
+    );
+
+    fireEvent.click(getByText("Show modal"));
+    flushEffects();
+
+    expect(customRoot).toContainElement(getByText("This is a modal"));
   });
 });

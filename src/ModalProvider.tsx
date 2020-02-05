@@ -7,6 +7,11 @@ import { ModalRoot } from "./ModalRoot";
  */
 export interface ModalProviderProps {
   /**
+   * Specifies the root element to render modals into
+   */
+  container?: Element;
+
+  /**
    * Container component for modal nodes
    */
   rootComponent?: React.ComponentType<any>;
@@ -23,6 +28,7 @@ export interface ModalProviderProps {
  * Provides modal context and renders ModalRoot.
  */
 export const ModalProvider = ({
+  container,
   rootComponent,
   children
 }: ModalProviderProps) => {
@@ -50,7 +56,11 @@ export const ModalProvider = ({
     <ModalContext.Provider value={contextValue}>
       <React.Fragment>
         {children}
-        <ModalRoot modals={modals} component={rootComponent} />
+        <ModalRoot
+          modals={modals}
+          component={rootComponent}
+          container={container}
+        />
       </React.Fragment>
     </ModalContext.Provider>
   );
