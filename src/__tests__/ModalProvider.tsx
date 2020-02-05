@@ -4,8 +4,8 @@ import { ModalProvider, useModal } from "..";
 import "jest-dom/extend-expect";
 
 describe("custom container prop", () => {
-  const Container: React.SFC = ({ children }) => (
-    <div data-testid="custom-container">{children}</div>
+  const RootComponent: React.SFC = ({ children }) => (
+    <div data-testid="custom-root">{children}</div>
   );
 
   const App = () => {
@@ -14,9 +14,9 @@ describe("custom container prop", () => {
     return <button onClick={showModal}>Show modal</button>;
   };
 
-  it("should render modals inside custom container", () => {
+  it("should render modals inside custom root component", () => {
     const { getByTestId, getByText } = render(
-      <ModalProvider container={Container}>
+      <ModalProvider rootComponent={RootComponent}>
         <App />
       </ModalProvider>
     );
@@ -24,7 +24,7 @@ describe("custom container prop", () => {
     fireEvent.click(getByText("Show modal"));
     flushEffects();
 
-    expect(getByTestId("custom-container")).toContainElement(
+    expect(getByTestId("custom-root")).toContainElement(
       getByText("This is a modal")
     );
   });

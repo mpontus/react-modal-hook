@@ -7,9 +7,9 @@ import { ModalRoot } from "./ModalRoot";
  */
 export interface ModalProviderProps {
   /**
-   * Container component for modals that will be passed to ModalRoot
+   * Container component for modal nodes
    */
-  container?: React.ComponentType<any>;
+  rootComponent?: React.ComponentType<any>;
 
   /**
    * Subtree that will receive modal context
@@ -22,7 +22,10 @@ export interface ModalProviderProps {
  *
  * Provides modal context and renders ModalRoot.
  */
-export const ModalProvider = ({ container, children }: ModalProviderProps) => {
+export const ModalProvider = ({
+  rootComponent,
+  children
+}: ModalProviderProps) => {
   const [modals, setModals] = useState<Record<string, ModalType>>({});
   const showModal = useCallback(
     (key: string, modal: ModalType) =>
@@ -47,7 +50,7 @@ export const ModalProvider = ({ container, children }: ModalProviderProps) => {
     <ModalContext.Provider value={contextValue}>
       <React.Fragment>
         {children}
-        <ModalRoot modals={modals} container={container} />
+        <ModalRoot modals={modals} component={rootComponent} />
       </React.Fragment>
     </ModalContext.Provider>
   );
