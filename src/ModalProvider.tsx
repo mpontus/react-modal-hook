@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState, useMemo, isValidElement } from "react";
 import { ModalType, ModalContext } from "./ModalContext";
 import { ModalRoot } from "./ModalRoot";
 
@@ -32,6 +32,12 @@ export const ModalProvider = ({
   rootComponent,
   children
 }: ModalProviderProps) => {
+  if (container && !(container instanceof HTMLElement)) {
+    throw new Error(`Container must specify DOM element to mount modal root into.
+    
+    This behavior has changed in 3.0.0. Please use \`rootComponent\` prop instead.
+    See: https://github.com/mpontus/react-modal-hook/issues/18`);
+  }
   const [modals, setModals] = useState<Record<string, ModalType>>({});
   const showModal = useCallback(
     (key: string, modal: ModalType) =>
