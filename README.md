@@ -116,7 +116,7 @@ import { TransitionGroup } from "react-transition-group";
 import App from "./App";
 
 ReactDOM.render(
-  <ModalProvider container={TransitionGroup}>
+  <ModalProvider rootComponent={TransitionGroup}>
     <App />
   </ModalProvider>,
   document.getElementById("root")
