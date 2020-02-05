@@ -1,11 +1,27 @@
 import React from "react";
-import { render, fireEvent, flushEffects } from "react-testing-library";
+import {
+  cleanup,
+  render,
+  fireEvent,
+  flushEffects
+} from "react-testing-library";
 import { ModalProvider, useModal } from "..";
 import "jest-dom/extend-expect";
 
+afterEach(cleanup);
+
+beforeEach(() => {
+  jest.spyOn(console, "error");
+  (global.console.error as any).mockImplementation(() => {});
+});
+
+afterEach(() => {
+  (global.console.error as any).mockRestore();
+});
+
 describe("custom container prop", () => {
-  const Container: React.SFC = ({ children }) => (
-    <div data-testid="custom-container">{children}</div>
+  const RootComponent: React.SFC = ({ children }) => (
+    <div data-testid="custom-root">{children}</div>
   );
 
   const App = () => {
@@ -14,9 +30,9 @@ describe("custom container prop", () => {
     return <button onClick={showModal}>Show modal</button>;
   };
 
-  it("should render modals inside custom container", () => {
+  it("should render modals inside custom root component", () => {
     const { getByTestId, getByText } = render(
-      <ModalProvider container={Container}>
+      <ModalProvider rootComponent={RootComponent}>
         <App />
       </ModalProvider>
     );
@@ -24,8 +40,42 @@ describe("custom container prop", () => {
     fireEvent.click(getByText("Show modal"));
     flushEffects();
 
-    expect(getByTestId("custom-container")).toContainElement(
+    expect(getByTestId("custom-root")).toContainElement(
       getByText("This is a modal")
+    );
+  });
+
+  it("should render modals inside the specified root element", () => {
+    const customRoot = document.createElement("div");
+
+    document.body.appendChild(customRoot);
+
+    const { getByText } = render(
+      <ModalProvider container={customRoot}>
+        <App />
+      </ModalProvider>
+    );
+
+    fireEvent.click(getByText("Show modal"));
+    flushEffects();
+
+    expect(customRoot).toContainElement(getByText("This is a modal"));
+  });
+
+  it("should throw an error when `container` does not specify a DOM elemnet", () => {
+    expect(() => {
+      render(
+        <ModalProvider container={React.Fragment as any}>
+          <App />
+        </ModalProvider>
+      );
+      flushEffects();
+    }).toThrowError(
+      expect.objectContaining({
+        message: expect.stringMatching(
+          /Container must specify DOM element to mount modal root into/
+        )
+      })
     );
   });
 });
