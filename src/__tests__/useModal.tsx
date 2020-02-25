@@ -1,18 +1,20 @@
-import "react-testing-library/cleanup-after-each";
-import React, { useState } from "react";
-import { render, fireEvent, flushEffects } from "react-testing-library";
+import * as React from "react";
+import { useState } from "react";
+
+import { render, fireEvent, RenderOptions } from "@testing-library/react";
+
 import { ModalProvider } from "../ModalProvider";
 import { useModal } from "../useModal";
 
 // Helper to render components in modal context
-const renderWithProvider: typeof render = (ui, options) => {
+const renderWithProvider = (ui: React.ReactElement, options?: Omit<RenderOptions, 'queries'>) => {
   const result = render(<ModalProvider>{ui}</ModalProvider>, options);
 
   return {
     ...result,
 
     // Override rerender to only update children of the provider
-    rerender: ui => renderWithProvider(ui, { container: result.container })
+    rerender: (ui: React.ReactElement) => renderWithProvider(ui, { container: result.container })
   };
 };
 
@@ -32,7 +34,6 @@ describe("simple usage", () => {
     const { getByText, queryByText } = renderWithProvider(<App />);
 
     fireEvent.click(getByText("Show modal"));
-    flushEffects();
 
     expect(queryByText("Modal content")).toBeTruthy();
   });
@@ -41,10 +42,8 @@ describe("simple usage", () => {
     const { getByText, queryByText } = renderWithProvider(<App />);
 
     fireEvent.click(getByText("Show modal"));
-    flushEffects();
 
     fireEvent.click(getByText("Hide modal"));
-    flushEffects();
 
     expect(queryByText("Modal content")).not.toBeTruthy();
   });
@@ -57,10 +56,8 @@ describe("simple usage", () => {
     );
 
     fireEvent.click(getByText("Show modal"));
-    flushEffects();
 
     rerender(<div />);
-    flushEffects();
 
     expect(queryByText("Modal content")).not.toBeTruthy();
   });
@@ -86,12 +83,10 @@ describe("updating modal", () => {
     const { getByText, queryByText } = renderWithProvider(<App />);
 
     fireEvent.click(getByText("Show modal"));
-    flushEffects();
 
     expect(queryByText("The count is 0")).toBeTruthy();
 
     fireEvent.click(getByText("Increment"));
-    flushEffects();
 
     expect(queryByText("The count is 1")).toBeTruthy();
   });
@@ -115,12 +110,10 @@ describe("updating modal", () => {
     const { getByText, queryByText } = renderWithProvider(<App />);
 
     fireEvent.click(getByText("Show modal"));
-    flushEffects();
 
     expect(queryByText("The count is 0")).toBeTruthy();
 
     fireEvent.click(getByText("Increment"));
-    flushEffects();
 
     expect(queryByText("The count is 1")).toBeTruthy();
   });
@@ -157,10 +150,8 @@ describe("updating modal", () => {
     const { getByText } = renderWithProvider(<App />);
 
     fireEvent.click(getByText("Show modal"));
-    flushEffects();
 
     fireEvent.click(getByText("Increment"));
-    flushEffects();
 
     expect(mountCounter).toHaveBeenCalledTimes(1);
   });
@@ -184,7 +175,6 @@ describe("multiple modals", () => {
 
     fireEvent.click(getByText("Show first modal"));
     fireEvent.click(getByText("Show second modal"));
-    flushEffects();
 
     expect(queryByText("First modal content")).toBeTruthy();
     expect(queryByText("Second modal content")).toBeTruthy();
@@ -192,16 +182,6 @@ describe("multiple modals", () => {
 });
 
 describe("calling useModal without ModalProvider", () => {
-  class ErrorBoundary extends React.Component {
-    static getDerivedStateFromError() {}
-
-    componentDidCatch() {}
-
-    render() {
-      return this.props.children;
-    }
-  }
-
   const App = () => {
     useModal(() => <div>Modal content</div>);
 
@@ -209,23 +189,16 @@ describe("calling useModal without ModalProvider", () => {
   };
 
   it("should throw an error", () => {
-    const catchError = jest.fn((e: Event) => e.preventDefault());
-    window.addEventListener("error", catchError);
+    const consoleError = jest.fn()
+    jest.spyOn(console, 'error').mockImplementation(consoleError);
 
-    render(
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
+    expect(
+      () => render(<App />)
+    ).toThrow(
+      new Error("Attempted to call useModal outside of modal context. Make sure your app is rendered inside ModalProvider.")
     );
-    flushEffects();
 
-    expect(catchError).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message: expect.stringMatching(
-          /Attempted to call useModal outside of modal context/
-        )
-      })
-    );
+    expect(consoleError).toHaveBeenCalled();
   });
 });
 

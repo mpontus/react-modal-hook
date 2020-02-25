@@ -1,12 +1,11 @@
-import React from "react";
+import * as React from "react";
 import {
   cleanup,
   render,
   fireEvent,
-  flushEffects
-} from "react-testing-library";
+} from "@testing-library/react";
 import { ModalProvider, useModal } from "..";
-import "jest-dom/extend-expect";
+import "@testing-library/jest-dom";
 
 afterEach(cleanup);
 
@@ -38,7 +37,6 @@ describe("custom container prop", () => {
     );
 
     fireEvent.click(getByText("Show modal"));
-    flushEffects();
 
     expect(getByTestId("custom-root")).toContainElement(
       getByText("This is a modal")
@@ -57,7 +55,6 @@ describe("custom container prop", () => {
     );
 
     fireEvent.click(getByText("Show modal"));
-    flushEffects();
 
     expect(customRoot).toContainElement(getByText("This is a modal"));
   });
@@ -69,7 +66,6 @@ describe("custom container prop", () => {
           <App />
         </ModalProvider>
       );
-      flushEffects();
     }).toThrowError(
       expect.objectContaining({
         message: expect.stringMatching(

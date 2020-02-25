@@ -1,5 +1,6 @@
-import React, { memo, useState, useEffect } from "react";
-import ReactDOM from "react-dom";
+import { memo, useState, useEffect } from "react";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 import { ModalType } from "./ModalContext";
 
 /**

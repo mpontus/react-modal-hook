@@ -8,13 +8,14 @@
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",
+  "sideEffects": false,
   "engines": {
     "node": ">=8",
     "npm": ">=5"
   },
   "scripts": {
-    "test": "cross-env CI=1 react-scripts-ts test --env=jsdom",
-    "test:watch": "react-scripts-ts test --env=jsdom",
+    "test": "cross-env CI=1 jest",
+    "test:watch": "jest --watch",
     "build": "rollup -c",
     "start": "rollup -c -w",
     "prepare": "yarn run build",
@@ -28,30 +29,27 @@
     "react-dom": "^16.8.3"
   },
   "devDependencies": {
-    "@svgr/rollup": "^2.4.1",
-    "@types/jest": "^23.1.5",
+    "@rollup/plugin-typescript": "^3.0.0",
+    "@testing-library/jest-dom": "^5.1.1",
+    "@testing-library/react": "^9.4.0",
+    "@types/jest": "^25.1.3",
     "@types/react": "^16.3.13",
     "@types/react-dom": "^16.0.5",
-    "babel-core": "^6.26.3",
-    "babel-runtime": "^6.26.0",
-    "cross-env": "^5.1.4",
-    "gh-pages": "^1.2.0",
-    "jest-dom": "^2.1.1",
+    "cross-env": "^7.0.0",
+    "gh-pages": "^2.2.0",
+    "jest": "^25.1.0",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
-    "react-scripts-ts": "^2.16.0",
-    "react-testing-library": "^5.3.1",
-    "rollup": "^0.62.0",
-    "rollup-plugin-babel": "^3.0.7",
-    "rollup-plugin-commonjs": "^9.1.3",
-    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup": "^1.31.1",
     "rollup-plugin-peer-deps-external": "^2.2.0",
-    "rollup-plugin-postcss": "^1.6.2",
-    "rollup-plugin-typescript2": "^0.17.0",
-    "rollup-plugin-url": "^1.4.0",
-    "typescript": "^3.1.6"
+    "ts-jest": "^25.2.1",
+    "tslib": "^1.11.0",
+    "typescript": "^3.8.2"
   },
   "files": [
     "dist"
-  ]
+  ],
+  "jest": {
+    "preset": "ts-jest"
+  }
 }
