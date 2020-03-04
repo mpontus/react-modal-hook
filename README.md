@@ -66,7 +66,7 @@ const App = () => {
 
 ### Updating Modals
 
-Second argument to `useModals` should contain an array of values referenced inside the modal:
+The second argument to `useModals` should contain an array of values referenced inside the modal:
 
 ```jsx
 const App = () => {
@@ -103,6 +103,31 @@ const App = () => {
   return <button onClick={showModal}>Show modal</button>;
 };
 ```
+
+It is also possible to determine whether the modal is currently shown:
+
+```jsx
+import React from "react";
+import ReactModal from "react-modal";
+import { useModal } from "react-modal-hook";
+
+const App = () => {
+  const [showModal, hideModal, isShown] = useModal(() => (
+    <ReactModal isOpen>
+      <p>Modal content</p>
+      <button onClick={hideModal}>Hide modal</button>
+    </ReactModal>
+  ));
+
+  return (
+    <>
+        <div>The modal is {isShown ? 'shown' : 'not shown'}</div>
+        <button onClick={showModal}>Show modal</button>;
+    </>
+  );
+};
+```
+
 
 ### Animated Modals
 

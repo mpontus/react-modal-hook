@@ -20,14 +20,19 @@ const renderWithProvider = (ui: React.ReactElement, options?: Omit<RenderOptions
 
 describe("simple usage", () => {
   const App = () => {
-    const [showModal, hideModal] = useModal(() => (
+    const [showModal, hideModal, isShown] = useModal(() => (
       <div>
         <p>Modal content</p>
         <button onClick={hideModal}>Hide modal</button>
       </div>
     ));
 
-    return <button onClick={showModal}>Show modal</button>;
+    return (
+      <>
+        <div>The modal is {isShown ? 'shown' : 'not shown'}</div>
+        <button onClick={showModal}>Show modal</button>;
+      </>
+    );
   };
 
   it("should show the modal", () => {
@@ -36,6 +41,8 @@ describe("simple usage", () => {
     fireEvent.click(getByText("Show modal"));
 
     expect(queryByText("Modal content")).toBeTruthy();
+
+    expect(queryByText("The modal is shown")).toBeTruthy();
   });
 
   it("should hide the modal", () => {
@@ -46,6 +53,8 @@ describe("simple usage", () => {
     fireEvent.click(getByText("Hide modal"));
 
     expect(queryByText("Modal content")).not.toBeTruthy();
+
+    expect(queryByText("The modal is not shown")).toBeTruthy();
   });
 
   it("should hide the modal when parent component unmounts", () => {

@@ -8,6 +8,11 @@ type ShowModal = () => void;
 type HideModal = () => void;
 
 /**
+ * A boolean representing whether the modal is open or not.
+ */
+type IsShown = boolean;
+
+/**
  * Utility function to generate unique number per component instance
  */
 const generateModalKey = (() => {
@@ -39,7 +44,7 @@ const isFunctionalComponent = (Component: Function) => {
 export const useModal = (
   component: ModalType,
   inputs: any[] = []
-): [ShowModal, HideModal] => {
+): [ShowModal, HideModal, IsShown] => {
   if (!isFunctionalComponent(component)) {
     throw new Error(
       "Only stateless components can be used as an argument to useModal. You have probably passed a class component where a function was expected."
@@ -49,7 +54,7 @@ export const useModal = (
   const key = useMemo(generateModalKey, []);
   const modal = useMemo(() => component, inputs);
   const context = useContext(ModalContext);
-  const [isShown, setShown] = useState<boolean>(false);
+  const [isShown, setShown] = useState<IsShown>(false);
   const showModal = useCallback(() => setShown(true), []);
   const hideModal = useCallback(() => setShown(false), []);
 
@@ -64,5 +69,5 @@ export const useModal = (
     return () => context.hideModal(key);
   }, [modal, isShown]);
 
-  return [showModal, hideModal];
+  return [showModal, hideModal, isShown];
 };
