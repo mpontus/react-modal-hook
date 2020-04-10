@@ -64,5 +64,5 @@ export const useModal = (
     return () => context.hideModal(key);
   }, [modal, isShown]);
 
-  return [showModal, hideModal];
+  return [showModal, hideModal, isShown];
 };
