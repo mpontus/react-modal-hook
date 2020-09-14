@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useCallback, useMemo } from "react";
+import { useContext, useEffect, useState, useCallback, useMemo, DependencyList } from "react";
 import { ModalContext, ModalType } from "./ModalContext";
 
 /**
@@ -38,7 +38,7 @@ const isFunctionalComponent = (Component: Function) => {
  */
 export const useModal = (
   component: ModalType,
-  inputs: any[] = []
+  inputs: DependencyList = []
 ): [ShowModal, HideModal] => {
   if (!isFunctionalComponent(component)) {
     throw new Error(
