@@ -51,6 +51,9 @@ export const ModalProvider = ({
   const hideModal = useCallback(
     (key: string) =>
       setModals(modals => {
+        if (!modals[key]) {
+          return modals;
+        }
         const newModals = { ...modals };
         delete newModals[key];
         return newModals;
