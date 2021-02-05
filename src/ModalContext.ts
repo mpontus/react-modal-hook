@@ -31,3 +31,4 @@ export const ModalContext = React.createContext<ModalContextType>({
   showModal: invariantViolation,
   hideModal: invariantViolation
 });
+ModalContext.displayName = 'ModalContext';
