@@ -40,7 +40,7 @@ interface ModalRendererProps {
 /**
  * Component responsible for rendering the modal.
  *
- * The identity of `Component` may change dependeing on the inputs passed to
+ * The identity of `Component` may change depending on the inputs passed to
  * `useModal`. If we simply rendered `<Component />` then the modal would be
  * susceptible to rerenders whenever one of the inputs change.
  */
