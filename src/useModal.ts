@@ -56,10 +56,5 @@ export const useModal = (
     context.hideModal(key);
   }, []);
 
-  useEffect(() => {
-    // Hide modal when parent component unmounts
-    return () => context.hideModal(key);
-  }, [modal]);
-
   return [showModal, hideModal];
 };
