@@ -50,7 +50,6 @@ export const useModal = (
   const modal = useMemo(() => component, inputs);
   const context = useContext(ModalContext);
   const showModal = useCallback((props) => {
-    console.log("props", props)
     context.showModal(key, () => modal(props));
   }, []);
   const hideModal = useCallback(() => {
