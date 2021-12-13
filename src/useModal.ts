@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState, useCallback, useMemo, DependencyList } from "react";
+import { useContext, useEffect, useCallback, useMemo, DependencyList } from "react";
 import { ModalContext, ModalType } from "./ModalContext";
 
 /**
  * Callback types provided for descriptive type-hints
  */
-type ShowModal = () => void;
+type ShowModal = (props: any) => void;
 type HideModal = () => void;
 
 /**
@@ -49,20 +49,17 @@ export const useModal = (
   const key = useMemo(generateModalKey, []);
   const modal = useMemo(() => component, inputs);
   const context = useContext(ModalContext);
-  const [isShown, setShown] = useState<boolean>(false);
-  const showModal = useCallback(() => setShown(true), []);
-  const hideModal = useCallback(() => setShown(false), []);
+  const showModal = useCallback((props) => {
+    context.showModal(key, () => modal(props));
+  }, []);
+  const hideModal = useCallback(() => {
+    context.hideModal(key);
+  }, []);
 
   useEffect(() => {
-    if (isShown) {
-      context.showModal(key, modal);
-    } else {
-      context.hideModal(key);
-    }
-
     // Hide modal when parent component unmounts
     return () => context.hideModal(key);
-  }, [modal, isShown]);
+  }, [modal]);
 
   return [showModal, hideModal];
 };
