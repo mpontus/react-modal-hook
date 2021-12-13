@@ -4,7 +4,7 @@ import { ModalContext, ModalType } from "./ModalContext";
 /**
  * Callback types provided for descriptive type-hints
  */
-type ShowModal = (props: any) => void;
+type ShowModal = (props: object) => void;
 type HideModal = () => void;
 
 /**
@@ -50,7 +50,7 @@ export const useModal = (
   const modal = useMemo(() => component, inputs);
   const context = useContext(ModalContext);
   const showModal = useCallback((props) => {
-    context.showModal(key, () => modal(props));
+    context.showModal(key, (_props) => modal({ ...props, ..._props }));
   }, []);
   const hideModal = useCallback(() => {
     context.hideModal(key);
