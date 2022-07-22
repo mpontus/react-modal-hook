@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import * as React from 'react';
 import { renderToString} from 'react-dom/server';
 import { ModalRoot } from '../ModalRoot';

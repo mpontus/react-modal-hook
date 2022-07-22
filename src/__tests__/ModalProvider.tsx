@@ -19,7 +19,7 @@ afterEach(() => {
 });
 
 describe("custom container prop", () => {
-  const RootComponent: React.SFC = ({ children }) => (
+  const RootComponent: React.FC<{children: React.ReactNode}> = ({ children }) => (
     <div data-testid="custom-root">{children}</div>
   );
 
