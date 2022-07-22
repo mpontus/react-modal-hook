@@ -1,4 +1,4 @@
-import typescript from '@rollup/plugin-typescript';
+import typescript from 'rollup-plugin-typescript2';
 import external from 'rollup-plugin-peer-deps-external'
 
 import pkg from './package.json'
